@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: jaeger
+  name: jaeger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: jaeger
+  template:
+    metadata:
+      labels:
+        io.kompose.service: jaeger
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: data-node
+      containers:
+      - image: jaegertracing/all-in-one:latest
+        imagePullPolicy: IfNotPresent
+        name: jaeger
+        ports:
+        - containerPort: 16686
+          hostPort: 16686
+        - containerPort: 9411
+          hostPort: 9411
+        - containerPort: 6831
+          hostPort: 6831
+          protocol: UDP
+        env:
+        - name: COLLECTOR_ZIPKIN_HTTP_PORT
+          value: "9411"
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        #- "media-filter-service.default.svc.cluster.local"
+        - "jaeger"
+      restartPolicy: Always

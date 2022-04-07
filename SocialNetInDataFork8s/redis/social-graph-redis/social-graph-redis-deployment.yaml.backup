@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: social-graph-redis
+  name: social-graph-redis
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      io.kompose.service: social-graph-redis
+  template:
+    metadata:
+      labels:
+        io.kompose.service: social-graph-redis
+    spec:
+    #  securityContext:
+    #    sysctls:
+    #    - name: net.ipv4.tcp_keepalive_time
+    #      value: "600"
+    #    - name: net.ipv4.tcp_keepalive_intvl
+    #      value: "60"
+    #    - name: net.ipv4.tcp_keepalive_probes
+    #      value: "3"
+      nodeSelector:
+        kubernetes.io/hostname: data-node
+      containers:
+      - command:
+        - sh
+        - -c
+        - "rm -f /data/dump.rdb && redis-server --save \"\" --appendonly no"
+        image: redis
+        imagePullPolicy: IfNotPresent
+        name: social-graph-redis
+        ports:
+        - containerPort: 6379
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        #- "media-filter-service.default.svc.cluster.local"
+        - "social-graph-redis"
+
+
+
+
+
+

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: home-timeline-redis
+  name: home-timeline-redis
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      io.kompose.service: home-timeline-redis
+  template:
+    metadata:
+      labels:
+        io.kompose.service: home-timeline-redis
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: data-node
+      containers:
+      - command:
+        - sh
+        - -c
+        - "rm -f /data/dump.rdb && redis-server --save \"\" --appendonly no"
+        image: redis
+        imagePullPolicy: IfNotPresent
+        name: home-timeline-redis
+        ports:
+        - containerPort: 6379
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        #- "media-filter-service.default.svc.cluster.local"
+        - "home-timeline-redis"
+     
+
+        
+
+
+
+
+
+

@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: unique-id-service
+  name: unique-id-service
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      io.kompose.service: unique-id-service
+  template:
+    metadata:
+      labels:
+        io.kompose.service: unique-id-service
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: work-node1
+      # securityContext:
+      #   runAsNonRoot: true
+      #   runAsUser: 1000321000
+      # initContainers:
+      # - name: configwriter
+      #   securityContext:    
+      #     runAsNonRoot: true
+      #   env:
+      #   - name: LOGICNODEIP
+      #     value: 172.16.84.130
+      #   - name: DATANODEIP
+      #     value: 172.16.84.128
+      #   image: youngpig/configwriter:latest
+      #   imagePullPolicy: IfNotPresent
+      #   volumeMounts:
+      #   - name: varconfig
+      #     mountPath: /var/configFiles
+      containers:
+      - command:
+        - UniqueIdService
+        image: yz2297/social-network-ml-swarm
+        imagePullPolicy: IfNotPresent
+        name: unique-id-service
+        ports:
+        - containerPort: 9090
+        # ports:
+        # - containerPort: 5000
+        #   hostPort: 5000
+        # lifecycle:
+        #   postStart:
+        #     exec:
+        #       command: ["/bin/sh", "-c", "sleep 5"]
+        # securityContext:
+        #   runAsNonRoot: true
+        volumeMounts:
+        - mountPath: /social-network-microservices/config
+          name: varconfig
+      restartPolicy: Always
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        #- "media-filter-service.default.svc.cluster.local"
+        - "unique-id-service"
+      volumes:
+      - name: varconfig
+        hostPath:
+          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/config
+
+
+        

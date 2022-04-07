@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: write-home-timeline-rabbitmq
+  name: write-home-timeline-rabbitmq
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      io.kompose.service: write-home-timeline-rabbitmq
+  template:
+    metadata:
+      labels:
+        io.kompose.service: write-home-timeline-rabbitmq
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: data-node
+      containers:
+      - env:
+        - name: RABBITMQ_ERLANG_COOKIE
+          value: "WRITE-HOME-TIMELINE-RABBITMQ"
+        - name: RABBITMQ_DEFAULT_VHOST
+          value: "/"
+        image: rabbitmq
+        imagePullPolicy: IfNotPresent
+        name: write-home-timeline-rabbitmq
+        ports:
+        - containerPort: 5672
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        #- "media-filter-service.default.svc.cluster.local"
+        - "write-home-timeline-rabbitmq"
+        
+        
+
+
+
+
+
+

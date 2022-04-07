@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: text-filter-service
+spec:
+  ports:
+    - port: 40000
+      protocol: TCP
+      targetPort: 40000
+  selector:
+    io.kompose.service: text-filter-service
+  type: ClusterIP
+  #clusterIP: None 

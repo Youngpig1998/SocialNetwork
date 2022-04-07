@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    io.kompose.service: post-storage-mongodb
+  name: post-storage-mongodb
+spec:
+  serviceName: "post-storage-mongodb"
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: post-storage-mongodb
+  volumeClaimTemplates:
+  - metadata:
+      name: post-storage-mongodb 
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "managed-nfs-storage"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi 
+  template:
+    metadata:
+     labels:
+       io.kompose.service: post-storage-mongodb
+    spec:
+     nodeSelector:
+        kubernetes.io/hostname: data-node
+     serviceAccount: nfs-provisioner
+     containers:
+      - image: mongo
+        imagePullPolicy: IfNotPresent
+        name: post-storage-mongodb
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - mountPath: /data/db
+          name: post-storage-mongodb
+     hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        #- "media-filter-service.default.svc.cluster.local"
+        - "post-storage-mongodb"

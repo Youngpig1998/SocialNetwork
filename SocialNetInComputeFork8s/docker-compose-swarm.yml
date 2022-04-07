@@ -1,0 +1,202 @@
+version: "3.8"
+services:
+      
+
+  url-shorten-service:
+    image: yz2297/social-network-ml-swarm
+    hostname: url-shorten-service
+#    ports:
+#      - 10004:9090
+    entrypoint: UrlShortenService
+    depends_on:
+      - jaeger
+    deploy:
+      mode: replicated
+      endpoint_mode: dnsrr
+      replicas: 1
+    volumes:
+      - ./config:/social-network-microservices/config
+    sysctls:
+      net.ipv4.tcp_keepalive_time: 600
+      net.ipv4.tcp_keepalive_intvl: 60
+      net.ipv4.tcp_keepalive_probes: 3
+      
+
+  user-service:
+    image: yz2297/social-network-ml-swarm
+    hostname: user-service
+#    ports:
+#      - 10005:9090
+    entrypoint: UserService
+    depends_on:
+      - user-mongodb
+      - user-memcached
+      - jaeger
+    deploy:
+      mode: replicated
+      endpoint_mode: dnsrr
+      replicas: 1
+    volumes:
+      - ./config:/social-network-microservices/config
+    sysctls:
+      net.ipv4.tcp_keepalive_time: 600
+      net.ipv4.tcp_keepalive_intvl: 60
+      net.ipv4.tcp_keepalive_probes: 3
+      
+
+
+      
+      
+
+  media-service:     #use daemonset
+    image: yz2297/social-network-ml-swarm
+    hostname: media-service
+#    ports:
+#      - 10006:9090
+    entrypoint: MediaService
+    depends_on:
+      - jaeger
+    deploy:
+      mode: replicated
+      # endpoint_mode: dnsrr
+      replicas: 4
+      placement:
+        max_replicas_per_node: 2
+    volumes:
+      - ./config:/social-network-microservices/config
+    sysctls:
+      net.ipv4.tcp_keepalive_time: 600
+      net.ipv4.tcp_keepalive_intvl: 60
+      net.ipv4.tcp_keepalive_probes: 3
+      
+
+  media-filter-service:
+    image: yz2297/social-network-media-filter
+    hostname: media-filter-service
+    deploy:
+      mode: replicated
+      # endpoint_mode: dnsrr
+      replicas: 16
+      placement:
+        max_replicas_per_node: 8
+    volumes:
+      - ./config:/social-network-microservices/config
+    sysctls:
+      net.ipv4.tcp_keepalive_time: 600
+      net.ipv4.tcp_keepalive_intvl: 60
+      net.ipv4.tcp_keepalive_probes: 3
+      
+
+  text-service:
+    image: yz2297/social-network-ml-swarm
+    hostname: text-service
+#    ports:
+#      - 10007:9090
+    entrypoint: TextService
+    depends_on:
+      - user-mention-service
+      - url-shorten-service
+      - jaeger
+    deploy:
+      mode: replicated
+      endpoint_mode: dnsrr
+      replicas: 1
+    volumes:
+      - ./config:/social-network-microservices/config
+    sysctls:
+      net.ipv4.tcp_keepalive_time: 600
+      net.ipv4.tcp_keepalive_intvl: 60
+      net.ipv4.tcp_keepalive_probes: 3
+      
+
+  text-filter-service:
+    image: yz2297/social-network-text-filter
+    hostname: text-filter-service
+    deploy:
+      mode: replicated
+      endpoint_mode: dnsrr
+      replicas: 1
+    volumes:
+      - ./config:/social-network-microservices/config
+    sysctls:
+      net.ipv4.tcp_keepalive_time: 600
+      net.ipv4.tcp_keepalive_intvl: 60
+      net.ipv4.tcp_keepalive_probes: 3
+      
+
+  unique-id-service:
+    image: yz2297/social-network-ml-swarm
+    hostname: unique-id-service
+#    ports:
+#      - 10008:9090
+    entrypoint: UniqueIdService
+    depends_on:
+      - jaeger
+    deploy:
+      mode: replicated
+      endpoint_mode: dnsrr
+      replicas: 1
+    volumes:
+      - ./config:/social-network-microservices/config
+    sysctls:
+      net.ipv4.tcp_keepalive_time: 600
+      net.ipv4.tcp_keepalive_intvl: 60
+      net.ipv4.tcp_keepalive_probes: 3
+      
+
+  user-mention-service:
+    image: yz2297/social-network-ml-swarm
+    hostname: user-mention-service
+#    ports:
+#      - 10009:9090
+    entrypoint: UserMentionService
+    depends_on:
+      - jaeger
+    deploy:
+      mode: replicated
+      endpoint_mode: dnsrr
+      replicas: 1
+    volumes:
+      - ./config:/social-network-microservices/config
+    sysctls:
+      net.ipv4.tcp_keepalive_time: 600
+      net.ipv4.tcp_keepalive_intvl: 60
+      net.ipv4.tcp_keepalive_probes: 3
+      
+
+      
+
+  nginx-thrift:
+    image: yg397/openresty-thrift:xenial
+    hostname: nginx-web-server
+    ports:
+      - 8080:8080
+      # - target: 8080
+      #   published: 8080
+      #   protocol: tcp
+      #   mode: host
+    volumes:
+      - ./nginx-web-server/lua-scripts:/usr/local/openresty/nginx/lua-scripts
+      - ./nginx-web-server/pages:/usr/local/openresty/nginx/pages
+      - ./nginx-web-server/conf/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./nginx-web-server/jaeger-config.json:/usr/local/openresty/nginx/jaeger-config.json
+      - ./gen-lua:/gen-lua
+    depends_on:
+      - jaeger
+    depends_on:
+      - user-service
+      - user-mention-service
+      - media-service
+      - text-service
+      - unique-id-service
+      - url-shorten-service
+      - home-timeline-service
+      - write-user-timeline-service
+      - write-home-timeline-service
+    sysctls:
+      net.ipv4.tcp_keepalive_time: 600
+      net.ipv4.tcp_keepalive_intvl: 60
+      net.ipv4.tcp_keepalive_probes: 3
+      
+
+      

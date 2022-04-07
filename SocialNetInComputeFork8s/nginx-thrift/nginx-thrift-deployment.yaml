@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: nginx-thrift
+  name: nginx-thrift
+spec:
+  replicas: 4
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      io.kompose.service: nginx-thrift
+  template:
+    metadata:
+      labels:
+        io.kompose.service: nginx-thrift
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: work-node1
+      # securityContext:
+      #   runAsNonRoot: true
+      #   runAsUser: 1000321000
+      # initContainers:
+      # - name: configwriter
+      #   securityContext:    
+      #     runAsNonRoot: true
+      #   env:
+      #   - name: LOGICNODEIP
+      #     value: 172.16.84.130
+      #   - name: DATANODEIP
+      #     value: 172.16.84.128
+      #   image: youngpig/configwriter:latest
+      #   imagePullPolicy: IfNotPresent
+      #   volumeMounts:
+      #   - name: varconfig
+      #     mountPath: /var/configFiles
+      containers:
+      - image: yg397/openresty-thrift:xenial
+        imagePullPolicy: IfNotPresent
+        name: nginx-thrift
+        ports:
+        - containerPort: 8080
+        # lifecycle:
+        #   postStart:
+        #     exec:
+        #       command: ["/bin/sh", "-c", "sleep 5"]
+        # securityContext:
+        #   runAsNonRoot: true
+        volumeMounts:
+        - mountPath: /usr/local/openresty/nginx/lua-scripts
+          name: lua-scripts
+        #volumeMounts:
+        - mountPath: /usr/local/openresty/nginx/pages
+          name: pages
+        #volumeMounts:
+        - mountPath: /usr/local/openresty/nginx/conf/nginx.conf
+          name: nginx
+        #volumeMounts:
+        - mountPath: /usr/local/openresty/nginx/jaeger-config.json
+          name: varconfig
+        #volumeMounts:
+        - mountPath: /gen-lua
+          name: genlua
+      #hostNetwork: true
+      #dnsPolicy: ClusterFirstWithHostNet
+      restartPolicy: Always
+      # volumes:
+      # - name: varconfig
+      #   emptyDir: {}
+      volumes:
+      - name: lua-scripts
+        hostPath:
+          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/nginx-web-server/lua-scripts
+      #volumes:
+      - name: pages
+        hostPath:
+          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/nginx-web-server/pages
+      #volumes:
+      - name: nginx
+        hostPath:
+          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/nginx-web-server/conf/nginx.conf
+      #volumes:
+      - name: varconfig
+        hostPath:
+          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/nginx-web-server/jaeger-config.json
+      #volumes:
+      - name: genlua
+        hostPath:
+          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/gen-lua
+
+        
