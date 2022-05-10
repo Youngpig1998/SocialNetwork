@@ -41,12 +41,6 @@ spec:
         image: yz2297/social-network-ml-swarm
         imagePullPolicy: IfNotPresent
         name: compose-post-service
-        env:
-        - name: PODIPADDRESS
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: status.podIP
         # ports:
         # - containerPort: 5000
         #   hostPort: 5000

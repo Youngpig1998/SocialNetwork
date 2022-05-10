@@ -5,7 +5,7 @@ metadata:
     io.kompose.service: home-timeline-service
   name: home-timeline-service
 spec:
-  replicas: 1
+  replicas: 4
   strategy:
     type: Recreate
   selector:
@@ -37,7 +37,7 @@ spec:
       #     mountPath: /var/configFiles
       containers:
       - command:
-        - SocialGraphService
+        - HomeTimelineService
         image: yz2297/social-network-ml-swarm
         imagePullPolicy: IfNotPresent
         name: home-timeline-service

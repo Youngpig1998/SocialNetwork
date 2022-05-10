@@ -21,7 +21,7 @@ spec:
       containers:
       - env:
         - name: RABBITMQ_ERLANG_COOKIE
-          value: "WRITE-HOME-TIMELINE-RABBITMQ"
+          value: "WRITE-USER-TIMELINE-RABBITMQ"
         - name: RABBITMQ_DEFAULT_VHOST
           value: "/"
         image: rabbitmq
