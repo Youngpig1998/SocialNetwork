@@ -4,7 +4,7 @@ A social network with unidirectional follow relationships, implemented with loos
 
 ## Application Structure
 
-![Social Network Architecture](socialNet_arch.png)
+<img src="doc/images/socialNet_arch.png"  style="zoom:100%;" />
 
 Supported actions: 
 * Create text post (optional media: image, video, shortened URL, user tag)
@@ -15,14 +15,53 @@ Supported actions:
 * Register/Login using user credentials
 * Follow/Unfollow user
 
-## Pre-requirements
-- Docker
-- Docker-compose
-- Python 3.5+ (with asyncio and aiohttp)
-- libssl-dev (apt-get install libssl-dev)
-- libz-dev (apt-get install libz-dev)
-- luarocks (apt-get install luarocks)
-- luasocket (luarocks install luasocket)
+## Preqreqs
+
+#### Environmental checklist🧾
+
+| Configuration item | Specific configuration |
+| :----------------: | :--------------------: |
+|         OS         |        centos7         |
+|     Kubernetes     |         v1.18+         |
+
+Have Installed the nfs-client-provisioner,it will create the pv and pvc we need.
+
+```shell
+kubectl apply -f $(pwd)/deploy/storageclass/.
+```
+
+
+
+## Steps to install SocialNetwork
+
+```shell
+sh $(pwd)/deploy/deployDataNode.sh
+sh $(pwd)/deploy/deployCompute.sh
+```
+
+
+
+## Steps to uninstall SocialNetwork
+
+```shell
+sh $(pwd)/deploy/undeploy.sh
+```
+
+
+
+## To test SocialNetwork
+
+```shell
+USERS=1 EXP_TIME=80s docker-compose -f $(pwd)/locust/docker-compose.yml up --scale worker=1
+```
+
+PS: In docker-compose.yml:
+   1)、--host http://172.16.84.129:5000     The IP Address need to be changed
+   2)、\- $HOME/sinan_locust_log:/mnt/locust_log     $HOME/sinan_locust_log,the directory must exist,you can decide to store where
+
+
+
+
 
 ## Running the social network application
 ### Before you start
@@ -82,7 +121,5 @@ This application is still actively being developed, so keep an eye on the repo t
 * Upgraded recommender
 * Upgraded search engine 
 
-### Questions and contact
-
-You are welcome to submit a pull request if you find a bug or have extended the application in an interesting way. For any questions please contact us at: <microservices-bench-L@list.cornell.edu>
+ 
 
