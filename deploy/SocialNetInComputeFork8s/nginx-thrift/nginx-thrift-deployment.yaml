@@ -71,22 +71,22 @@ spec:
       volumes:
       - name: lua-scripts
         hostPath:
-          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/nginx-web-server/lua-scripts
+          path: /root/Youngpig1998/SocialNetwork/deploy/SocialNetInComputeFork8s/nginx-web-server/lua-scripts
       #volumes:
       - name: pages
         hostPath:
-          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/nginx-web-server/pages
+          path: /root/Youngpig1998/SocialNetwork/deploy/SocialNetInComputeFork8s/nginx-web-server/pages
       #volumes:
       - name: nginx
         hostPath:
-          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/nginx-web-server/conf/nginx.conf
+          path: /root/Youngpig1998/SocialNetwork/deploy/SocialNetInComputeFork8s/nginx-web-server/conf/nginx.conf
       #volumes:
       - name: varconfig
         hostPath:
-          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/nginx-web-server/jaeger-config.json
+          path: /root/Youngpig1998/SocialNetwork/deploy/SocialNetInComputeFork8s/nginx-web-server/jaeger-config.json
       #volumes:
       - name: genlua
         hostPath:
-          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/gen-lua
+          path: /root/Youngpig1998/SocialNetwork/deploy/SocialNetInComputeFork8s/gen-lua
 
         

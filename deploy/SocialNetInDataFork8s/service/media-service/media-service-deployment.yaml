@@ -5,7 +5,8 @@ metadata:
     io.kompose.service: media-service
   name: media-service
 spec:
-  replicas: 4
+#  replicas: 4
+  replicas: 2
   strategy:
     type: Recreate
   selector:
@@ -16,8 +17,8 @@ spec:
       labels:
         io.kompose.service: media-service
     spec:
-      #nodeSelector:
-      #  kubernetes.io/hostname: data-node
+      nodeSelector:
+        kubernetes.io/hostname: data-node
       # securityContext:
       #   runAsNonRoot: true
       #   runAsUser: 1000321000
@@ -67,8 +68,6 @@ spec:
           path: /root/Youngpig1998/SocialNetwork/deploy/SocialNetInComputeFork8s/config
 
 
-
-        
 
 
 
