@@ -17,7 +17,7 @@ spec:
         io.kompose.service: nginx-thrift
     spec:
       nodeSelector:
-        kubernetes.io/hostname: work-node
+        kubernetes.io/hostname: logic-node
       # securityContext:
       #   runAsNonRoot: true
       #   runAsUser: 1000321000

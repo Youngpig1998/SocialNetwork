@@ -1,7 +1,7 @@
 disabled: false
 reporter:
   logSpans: false
-  localAgentHostPort: "jaeger:6831"
+  localAgentHostPort: "172.16.108.129:6831"
   queueSize: 10000
   bufferFlushInterval: 1
 sampler:

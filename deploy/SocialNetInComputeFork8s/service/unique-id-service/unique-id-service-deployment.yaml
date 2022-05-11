@@ -17,7 +17,7 @@ spec:
         io.kompose.service: unique-id-service
     spec:
       nodeSelector:
-        kubernetes.io/hostname: work-node
+        kubernetes.io/hostname: logic-node
       # securityContext:
       #   runAsNonRoot: true
       #   runAsUser: 1000321000
@@ -64,7 +64,7 @@ spec:
       volumes:
       - name: varconfig
         hostPath:
-          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/config
+          path: /root/Youngpig1998/SocialNetwork/deploy/SocialNetInComputeFork8s/config
 
 
         

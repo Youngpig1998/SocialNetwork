@@ -64,7 +64,7 @@ spec:
       volumes:
       - name: varconfig
         hostPath:
-          path: /root/Go-projects/social-Network/SocialNetInComputeFork8s/config
+          path: /root/Youngpig1998/SocialNetwork/deploy/SocialNetInComputeFork8s/config
 
 
 
